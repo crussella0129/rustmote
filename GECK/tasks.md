@@ -17,7 +17,7 @@ Task IDs 001–016 mirror the 16 phases of RUSTMOTE_SPEC §11 "Build order" verb
 
 ## Current Sprint
 
-- [ ] TASK-001 | TYPE: chore | SCOPE: medium | OWNER: agent
+- [x] TASK-001 | TYPE: chore | SCOPE: medium | OWNER: agent — completed log Entry #2
   - Phase 1 — Workspace scaffold, CI, licenses, README skeleton. Create Cargo workspace layout per spec §1 (root `Cargo.toml`, `crates/rustmote-core`, `crates/rustmote-cli`, `docker/relay/`, `docs/`). Add dual MIT + Apache-2.0 licenses, `.gitignore`, empty README, `.github/workflows/{ci.yml,release.yml}`.
 
 - [ ] TASK-002 | TYPE: feature | SCOPE: medium | OWNER: agent
@@ -72,4 +72,4 @@ Task IDs 001–016 mirror the 16 phases of RUSTMOTE_SPEC §11 "Build order" verb
 
 ## Completed (Recent)
 
-(empty)
+- [x] TASK-001 — Phase 1 workspace scaffold (log Entry #2, 2026-04-19)

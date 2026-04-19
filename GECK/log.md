@@ -17,3 +17,9 @@ context budget. Full history queryable via `log_index.jsonl`.*
 - State: CONTINUE
 - Refs: DECISION-001
 - Next: Begin TASK-001 (Phase 1 — Cargo workspace scaffold, CI, licenses, README skeleton).
+
+## Entry #2 — 2026-04-19 — touched: TASK-001
+- Did: Completed Phase 1. Created Cargo workspace (root `Cargo.toml` per spec §2 with all pinned workspace deps), `rustmote-core` library skeleton (lib.rs + 10 module stubs + full `RustmoteError` enum per §3.9), `rustmote-cli` binary skeleton (clap derive tree exposing all six subcommand groups from §4.1; stubs bail with phase references), dual MIT + Apache-2.0 licenses, `.gitignore`, README skeleton, `docker/relay/` + `docs/` placeholders, `.github/workflows/ci.yml` (fmt + clippy pedantic + test matrix ubuntu stable/beta/MSRV-1.75 + win + mac + doc) and `release.yml` (5-target binary builds on tag). Verified `cargo build`, `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings -W clippy::pedantic` all clean; `rustmote --help` enumerates the full subcommand surface. Allow-listed `clippy::doc_markdown` (product name "RustDesk") and `clippy::unused_async` (placeholder handlers) with rationale per §6.6.
+- Files: Cargo.toml, LICENSE-MIT, LICENSE-APACHE, README.md, crates/rustmote-core/**, crates/rustmote-cli/**, docker/relay/README.md, docs/*.md, .github/workflows/{ci.yml,release.yml}
+- State: CONTINUE
+- Next: Begin TASK-002 (Phase 2 — `rustmote-core::config` + `registry` + tests per spec §3.1–§3.2).
