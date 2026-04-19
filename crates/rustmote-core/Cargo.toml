@@ -17,6 +17,7 @@ thiserror = { workspace = true }
 tracing = { workspace = true }
 russh = { workspace = true }
 russh-keys = { workspace = true }
+async-trait = { workspace = true }
 keyring = { workspace = true }
 directories = { workspace = true }
 mdns-sd = { workspace = true }
@@ -29,3 +30,4 @@ chrono = { workspace = true }
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["macros", "rt-multi-thread", "test-util"] }
+async-trait = { workspace = true }

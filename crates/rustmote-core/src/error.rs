@@ -46,6 +46,41 @@ pub enum RustmoteError {
     #[error("ssh connection failed: {0}")]
     SshConnection(#[from] russh::Error),
 
+    #[error(
+        "host key mismatch for {host}:{port} — pinned {expected}, observed {actual}; \
+         refusing to connect (spec §6.7). Remove the stale entry from known_hosts.toml \
+         only after verifying the new key out-of-band."
+    )]
+    HostKeyMismatch {
+        host: String,
+        port: u16,
+        expected: String,
+        actual: String,
+    },
+
+    #[error("host key for {host}:{port} is not pinned and strict TOFU policy refuses first-use")]
+    HostKeyUnknown { host: String, port: u16 },
+
+    #[error(
+        "ssh authentication failed for {user}@{host}; tried {methods} (last error: {last_error})"
+    )]
+    SshAuthFailed {
+        user: String,
+        host: String,
+        methods: String,
+        last_error: String,
+    },
+
+    #[error("no SSH private key found at any of: {0}")]
+    NoSshKeyFound(String),
+
+    #[error("remote command '{command}' exited with status {exit_code}: {stderr}")]
+    RemoteCommandFailed {
+        command: String,
+        exit_code: u32,
+        stderr: String,
+    },
+
     #[error("credential access failed: {0}")]
     Credential(#[from] keyring::Error),
 
