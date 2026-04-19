@@ -70,6 +70,10 @@ Task IDs 001–016 mirror the 16 phases of RUSTMOTE_SPEC §11 "Build order" verb
 - [ ] TASK-017 | TYPE: research | SCOPE: small | OWNER: human
   - Resolve spec §13 open questions as they surface during implementation: behavior when `via_server` missing from registry; IPv6 in v0.1 (default: no); RustDesk viewer version mismatch handling; whether to add a `rustmote init` wizard; `bootstrap` behavior when other Docker containers exist; Docker Hub unreachable during `bootstrap` (abort vs tag-only with warning). Flag to owner rather than guessing per spec.
 
+- [x] TASK-018 | TYPE: chore | SCOPE: small | OWNER: agent — completed log Entry #3
+  - Vendor `RUSTMOTE_SPEC.md` into repo root so sessions on other machines don't depend on `~/Downloads/`. Update `GECK/LLM_init.md` and `README.md` references to the in-repo path.
+
 ## Completed (Recent)
 
 - [x] TASK-001 — Phase 1 workspace scaffold (log Entry #2, 2026-04-19)
+- [x] TASK-018 — Vendored RUSTMOTE_SPEC.md into repo (log Entry #3, 2026-04-19)

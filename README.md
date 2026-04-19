@@ -21,7 +21,7 @@ A Tauri GUI crate (`rustmote-gui`) is explicitly deferred to v0.2.
 
 ## Quickstart
 
-The quickstart lands in Phase 15 (TASK-015) once the CLI payoff command is wired up. For now, see `RUSTMOTE_SPEC.md` for the authoritative design.
+The quickstart lands in Phase 15 (TASK-015) once the CLI payoff command is wired up. For now, see [`RUSTMOTE_SPEC.md`](RUSTMOTE_SPEC.md) for the authoritative design.
 
 ## License
 

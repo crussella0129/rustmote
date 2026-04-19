@@ -32,7 +32,7 @@ Ships as a CLI in v0.1 backed by a shared core library (`rustmote-core`). A Taur
 
 ## Context
 
-Authoritative spec lives at `~/Downloads/RUSTMOTE_SPEC.md` (13 sections). §11 of the spec prescribes a strict 16-phase build order — do not parallelize phases. §10 enumerates what is out of scope for v0.1 (Tauri GUI, noVNC, multi-hop SSH, auto-update, telemetry, etc.).
+Authoritative spec lives at [`RUSTMOTE_SPEC.md`](../RUSTMOTE_SPEC.md) in the repo root (13 sections). §11 prescribes a strict 16-phase build order — do not parallelize phases. §10 enumerates what is out of scope for v0.1 (Tauri GUI, noVNC, multi-hop SSH, auto-update, telemetry, etc.).
 
 Owner: Charles Russell (Thread & Signal LLC). License: MIT OR Apache-2.0 dual.
 

@@ -23,3 +23,9 @@ context budget. Full history queryable via `log_index.jsonl`.*
 - Files: Cargo.toml, LICENSE-MIT, LICENSE-APACHE, README.md, crates/rustmote-core/**, crates/rustmote-cli/**, docker/relay/README.md, docs/*.md, .github/workflows/{ci.yml,release.yml}
 - State: CONTINUE
 - Next: Begin TASK-002 (Phase 2 — `rustmote-core::config` + `registry` + tests per spec §3.1–§3.2).
+
+## Entry #3 — 2026-04-19 — touched: TASK-018
+- Did: Vendored `RUSTMOTE_SPEC.md` (31 KB, 697 lines) into the repo root at the owner's request so the authoritative spec travels with the repo and sessions on other machines don't depend on `~/Downloads/`. Updated cross-references in `GECK/LLM_init.md` (Context section) and `README.md` (quickstart placeholder) to point at the in-repo path.
+- Files: RUSTMOTE_SPEC.md (new), GECK/LLM_init.md, README.md, GECK/tasks.md
+- State: CONTINUE
+- Next: Begin TASK-002 (Phase 2 — `rustmote-core::config` + `registry` + tests).
