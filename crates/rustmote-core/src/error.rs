@@ -21,6 +21,28 @@ pub enum RustmoteError {
     #[error("server '{0}' not in registry")]
     UnknownServer(String),
 
+    #[error("server '{0}' is already registered")]
+    ServerAlreadyExists(String),
+
+    #[error("target '{0}' not in registry")]
+    UnknownTarget(String),
+
+    #[error("target '{0}' is already registered")]
+    TargetAlreadyExists(String),
+
+    #[error("could not resolve a config directory for the current platform")]
+    NoConfigDir,
+
+    #[error("failed to parse config file {path}: {source}")]
+    ConfigParse {
+        path: std::path::PathBuf,
+        #[source]
+        source: toml::de::Error,
+    },
+
+    #[error("failed to serialize config: {0}")]
+    ConfigSerialize(#[from] toml::ser::Error),
+
     #[error("ssh connection failed: {0}")]
     SshConnection(#[from] russh::Error),
 

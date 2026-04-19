@@ -29,3 +29,9 @@ context budget. Full history queryable via `log_index.jsonl`.*
 - Files: RUSTMOTE_SPEC.md (new), GECK/LLM_init.md, README.md, GECK/tasks.md
 - State: CONTINUE
 - Next: Begin TASK-002 (Phase 2 — `rustmote-core::config` + `registry` + tests).
+
+## Entry #4 — 2026-04-19 — touched: TASK-002
+- Did: Completed Phase 2. Added `CredentialMode` enum in `credentials.rs` (spec §3.3 — serde rename_all=lowercase, FromStr/Display, default Prompt). Defined `Target` in `target.rs` and `RemoteServer` in `registry.rs` per spec §3.1 with `chrono` timestamps and optional-field skip-on-serialize. Implemented `Config` + `GeneralConfig` in `config.rs` with OS-appropriate path resolution via `directories::ProjectDirs("","","rustmote")` (Linux: `$XDG_CONFIG_HOME/rustmote/config.toml`; Windows: `%APPDATA%`; macOS: `~/Library/Application Support`); atomic save via temp-file + rename; missing-file load returns `Config::default()`. Added registry CRUD (`add/get/remove/update_server`, `add/get/remove_target`) as impls on `Config` with name/id uniqueness enforcement. Added `ConfigParse`/`ConfigSerialize`/`NoConfigDir`/`{Server,Target}AlreadyExists`/`UnknownTarget` variants to `RustmoteError`. Shipped 21 unit tests + 3 integration tests (`tests/config_roundtrip.rs` per spec §7.2 — populated roundtrip, missing-file default, spec filename constants). `cargo build`, `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings -W clippy::pedantic`, and `cargo test --workspace` all green.
+- Files: crates/rustmote-core/src/{config.rs,credentials.rs,error.rs,registry.rs,target.rs}, crates/rustmote-core/tests/config_roundtrip.rs
+- State: CONTINUE
+- Next: Begin TASK-003 (Phase 3 — `rustmote-core::credentials` dispatch over Prompt/Keychain/Unsafe with 0600 enforcement and mock-keyring integration test).
