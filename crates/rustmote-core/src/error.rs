@@ -55,8 +55,16 @@ pub enum RustmoteError {
     #[error("unsafe mode requires explicit acknowledgment flag")]
     UnsafeModeNotAcknowledged,
 
-    #[error("credentials file has insecure permissions: {0:o}")]
+    #[error("credentials file has insecure permissions: {0:o} (expected 600)")]
     InsecureCredentialsFile(u32),
+
+    #[error(
+        "unsafe credential mode is not supported on this platform yet; use `keychain` mode instead"
+    )]
+    UnsafeModeUnsupportedOnPlatform,
+
+    #[error("no stored credential for {user}@{server}")]
+    NoStoredCredential { server: String, user: String },
 
     #[error("docker hub api error: {0}")]
     RegistryApi(String),

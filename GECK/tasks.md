@@ -23,7 +23,7 @@ Task IDs 001–016 mirror the 16 phases of RUSTMOTE_SPEC §11 "Build order" verb
 - [x] TASK-002 | TYPE: feature | SCOPE: medium | OWNER: agent — completed log Entry #4
   - Phase 2 — `rustmote-core::config` + `registry` + tests. Implement `RemoteServer` and `Target` structs (§3.1), TOML config load/save at OS-appropriate path via `directories` (§3.2), and registry CRUD. Unit + integration test (`config_roundtrip.rs`).
 
-- [ ] TASK-003 | TYPE: feature | SCOPE: medium | OWNER: agent
+- [x] TASK-003 | TYPE: feature | SCOPE: medium | OWNER: agent — completed log Entry #5
   - Phase 3 — `rustmote-core::credentials` with all three modes + tests. Implement `CredentialMode::{Prompt, Keychain, Unsafe}` dispatch (§3.3), `0600` permission enforcement on `credentials.toml`, refusal to read unsafe file without explicit ack. Integration test `credential_modes.rs` with mock keyring.
 
 - [ ] TASK-004 | TYPE: feature | SCOPE: large | OWNER: agent
@@ -78,3 +78,4 @@ Task IDs 001–016 mirror the 16 phases of RUSTMOTE_SPEC §11 "Build order" verb
 - [x] TASK-001 — Phase 1 workspace scaffold (log Entry #2, 2026-04-19)
 - [x] TASK-018 — Vendored RUSTMOTE_SPEC.md into repo (log Entry #3, 2026-04-19)
 - [x] TASK-002 — Phase 2 config + registry + tests (log Entry #4, 2026-04-19)
+- [x] TASK-003 — Phase 3 credentials dispatch + 0600 enforcement + tests (log Entry #5, 2026-04-19)
