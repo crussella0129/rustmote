@@ -1,0 +1,6 @@
+# Learnings — Rustmote
+
+*One line per learning record. Drill into the file for context.*
+*Append-only. Future sessions read this index to avoid re-stepping on the same rakes.*
+
+(no learnings yet)
