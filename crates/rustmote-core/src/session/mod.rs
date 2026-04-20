@@ -3,7 +3,7 @@
 //! Implements spec §3.4 (session orchestration) and §6.7 (mandatory
 //! host-key TOFU verification). The flow per connection is:
 //!
-//! 1. Connect to `server.host:server.ssh_port` with a [`HostKeyHandler`]
+//! 1. Connect to `server.host:server.ssh_port` with a `HostKeyHandler`
 //!    that defers to [`known_hosts::KnownHosts`].
 //! 2. Try key-based auth in order: config override → `~/.ssh/id_ed25519`
 //!    → `~/.ssh/id_rsa`. Fall back to password auth via
@@ -202,8 +202,9 @@ impl Session {
     ///
     /// `known_hosts` is taken by `Arc<Mutex<..>>` so the caller can
     /// observe TOFU updates and persist after `open` returns. The
-    /// returned [`Session::was_newly_pinned`] flag tells the caller
-    /// whether a new entry was added.
+    /// returned `bool` is true when a new host-key entry was pinned
+    /// on this connection, false when it matched a previously stored
+    /// entry — callers use this to decide whether to save the store.
     ///
     /// # Errors
     /// - [`RustmoteError::HostKeyMismatch`] on fingerprint drift

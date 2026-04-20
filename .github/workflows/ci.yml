@@ -44,7 +44,7 @@ jobs:
           - os: ubuntu-latest
             rust: beta
           - os: ubuntu-latest
-            rust: "1.75"   # MSRV per spec §2
+            rust: "1.85"   # MSRV per spec §6.6 (bumped from 1.75 — DECISION-002)
           - os: windows-latest
             rust: stable
           - os: macos-latest

@@ -14,7 +14,7 @@
 //!   Manager / macOS Keychain).
 //!
 //! The CLI gate requiring `--i-understand-this-is-insecure` on first
-//! enable lives in [`rustmote-cli`] (§6.2) — this module is concerned
+//! enable lives in `rustmote-cli` (§6.2) — this module is concerned
 //! only with on-disk / keyring mechanics.
 
 use std::collections::BTreeMap;

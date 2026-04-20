@@ -8,6 +8,7 @@
 //!   `0600` permissions on Unix.
 
 use std::collections::HashMap;
+#[cfg(unix)]
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 
@@ -58,6 +59,7 @@ impl KeyringBackend for MockKeyring {
 // Scratch-path helper
 // -----------------------------------------------------------------------------
 
+#[cfg(unix)]
 fn scratch_path(tag: &str) -> PathBuf {
     let mut p = std::env::temp_dir();
     p.push(format!(

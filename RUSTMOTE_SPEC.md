@@ -84,7 +84,7 @@ members = ["crates/rustmote-core", "crates/rustmote-cli"]
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.75"
+rust-version = "1.85"
 authors = ["Charles Russell <your-email>"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/crussella0129/rustmote"
@@ -590,7 +590,7 @@ Every module in `rustmote-core` gets a `#[cfg(test)] mod tests` block. Target >7
 
 `.github/workflows/ci.yml` runs on:
 
-- ubuntu-latest (stable, beta, MSRV 1.75)
+- ubuntu-latest (stable, beta, MSRV 1.85)
 - windows-latest (stable)
 - macos-latest (stable)
 
