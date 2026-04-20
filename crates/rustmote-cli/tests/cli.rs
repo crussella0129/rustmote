@@ -146,3 +146,95 @@ fn server_add_without_user_on_non_tty_fails_with_clear_message() {
         .stderr(predicate::str::contains("--user"));
     std::fs::remove_dir_all(&dir).ok();
 }
+
+#[test]
+fn target_list_on_empty_config_exits_zero() {
+    let dir = scratch_config_dir("target-list-empty");
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["target", "list"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("no targets registered"));
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn target_add_list_remove_roundtrip() {
+    let dir = scratch_config_dir("target-roundtrip");
+    let bin = || Command::cargo_bin("rustmote").unwrap();
+
+    // Register a server first so --via resolves.
+    bin()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args([
+            "server",
+            "add",
+            "zima-brain",
+            "--host",
+            "10.0.0.1",
+            "--user",
+            "charles",
+        ])
+        .assert()
+        .success();
+
+    bin()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args([
+            "target",
+            "add",
+            "123456789",
+            "--label",
+            "voron",
+            "--via",
+            "zima-brain",
+        ])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("123456789"));
+
+    bin()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["target", "list", "--json"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("\"id\": \"123456789\""))
+        .stdout(predicate::str::contains("\"label\": \"voron\""))
+        .stdout(predicate::str::contains("\"via_server\": \"zima-brain\""));
+
+    bin()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["target", "remove", "123456789"])
+        .assert()
+        .success();
+
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn target_add_rejects_invalid_id_per_spec_3_5() {
+    let dir = scratch_config_dir("target-bad-id");
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["target", "add", "not-a-number"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("invalid RustDesk target id"));
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn target_add_rejects_unknown_via_server() {
+    let dir = scratch_config_dir("target-unknown-via");
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["target", "add", "123456789", "--via", "nonexistent-server"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("nonexistent-server"));
+    std::fs::remove_dir_all(&dir).ok();
+}

@@ -2343,6 +2343,7 @@ dependencies = [
  "comfy-table",
  "dialoguer",
  "indicatif",
+ "ipnet",
  "predicates",
  "rustmote-core",
  "serde",
