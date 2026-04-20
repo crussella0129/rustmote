@@ -1,6 +1,6 @@
 # Tasks — Rustmote
 
-**Last Updated:** 2026-04-20 (Entry #10)
+**Last Updated:** 2026-04-20 (Entry #11)
 
 ## Legend
 
@@ -41,7 +41,7 @@ Task IDs 001–016 mirror the 16 phases of RUSTMOTE_SPEC §11 "Build order" verb
 - [x] TASK-008 | TYPE: feature | SCOPE: medium | OWNER: agent — completed log Entry #10
   - Phase 8 — `rustmote-cli::target` subcommands (`scan`/`list`/`add`/`remove`). `indicatif` progress for scans.
 
-- [ ] TASK-009 | TYPE: feature | SCOPE: medium | OWNER: agent
+- [x] TASK-009 | TYPE: feature | SCOPE: medium | OWNER: agent — completed log Entry #11
   - Phase 9 — `rustmote-cli::connect` — the payoff command wiring session → viewer.
 
 - [ ] TASK-010 | TYPE: feature | SCOPE: small | OWNER: agent
@@ -84,3 +84,4 @@ Task IDs 001–016 mirror the 16 phases of RUSTMOTE_SPEC §11 "Build order" verb
 - [x] TASK-006 — Phase 6 concurrent LAN discovery (mDNS + ICMP + ARP) (log Entry #8, 2026-04-20)
 - [x] TASK-007 — Phase 7 CLI server subcommands + spec §7.3 smoke tests (log Entry #9, 2026-04-20)
 - [x] TASK-008 — Phase 8 CLI target subcommands + indicatif scan spinner + §3.5 reuse (log Entry #10, 2026-04-20)
+- [x] TASK-009 — Phase 9 CLI connect command wiring session → viewer (log Entry #11, 2026-04-20)

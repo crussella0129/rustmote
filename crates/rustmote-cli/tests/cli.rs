@@ -227,6 +227,38 @@ fn target_add_rejects_invalid_id_per_spec_3_5() {
 }
 
 #[test]
+fn connect_with_nothing_resolvable_fails_with_hint() {
+    // No target registered, arg is not a valid RustDesk ID, no server
+    // resolvable — the pre-session resolver should bail before any
+    // network I/O happens. Confirms spec §4.1 "<target>" parsing stops
+    // cold at a bad argument rather than racing to SSH.
+    let dir = scratch_config_dir("connect-no-target");
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["connect", "not-a-number"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("not-a-number"));
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn connect_without_via_and_no_default_fails_cleanly() {
+    // Valid RustDesk ID, but no --via, no target with via_server, no
+    // default_server. Exercises the resolve_via_name error path.
+    let dir = scratch_config_dir("connect-no-via");
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["connect", "123456789"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("--via"));
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
 fn target_add_rejects_unknown_via_server() {
     let dir = scratch_config_dir("target-unknown-via");
     Command::cargo_bin("rustmote")
