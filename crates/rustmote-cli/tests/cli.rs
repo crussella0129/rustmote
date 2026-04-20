@@ -270,3 +270,112 @@ fn target_add_rejects_unknown_via_server() {
         .stderr(predicate::str::contains("nonexistent-server"));
     std::fs::remove_dir_all(&dir).ok();
 }
+
+#[test]
+fn config_show_on_empty_exits_zero_with_defaults() {
+    let dir = scratch_config_dir("config-show-empty");
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["config", "show"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("credential_mode"))
+        .stdout(predicate::str::contains("prompt"));
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn config_show_json_is_parseable_and_has_expected_defaults() {
+    let dir = scratch_config_dir("config-show-json");
+    let assert = Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["config", "show", "--json"])
+        .assert()
+        .success();
+    let stdout = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).expect("valid JSON");
+    assert_eq!(parsed["general"]["credential_mode"], "prompt");
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn config_set_mode_keychain_persists_and_is_visible_in_show() {
+    let dir = scratch_config_dir("config-set-mode");
+    let bin = || Command::cargo_bin("rustmote").unwrap();
+
+    bin()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["config", "set-mode", "keychain"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("keychain"));
+
+    bin()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["config", "show"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("keychain"));
+
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn config_set_mode_unsafe_without_ack_is_refused() {
+    let dir = scratch_config_dir("config-set-mode-unsafe-no-ack");
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["config", "set-mode", "unsafe"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("--i-understand-this-is-insecure"));
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn config_set_mode_rejects_bogus_mode() {
+    let dir = scratch_config_dir("config-set-mode-bogus");
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["config", "set-mode", "bogus"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("bogus"));
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn status_on_empty_config_exits_zero() {
+    let dir = scratch_config_dir("status-empty");
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["status"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("credential_mode"))
+        .stdout(predicate::str::contains("servers"))
+        .stdout(predicate::str::contains("pinned_hosts"));
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn status_json_emits_structured_report() {
+    let dir = scratch_config_dir("status-json");
+    let assert = Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["status", "--json"])
+        .assert()
+        .success();
+    let stdout = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).expect("valid JSON");
+    assert_eq!(parsed["credential_mode"], "prompt");
+    assert_eq!(parsed["servers"], 0);
+    assert!(parsed["viewer"]["status"].is_string());
+    std::fs::remove_dir_all(&dir).ok();
+}

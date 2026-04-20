@@ -1,6 +1,6 @@
 # Tasks — Rustmote
 
-**Last Updated:** 2026-04-20 (Entry #11)
+**Last Updated:** 2026-04-20 (Entry #12)
 
 ## Legend
 
@@ -44,7 +44,7 @@ Task IDs 001–016 mirror the 16 phases of RUSTMOTE_SPEC §11 "Build order" verb
 - [x] TASK-009 | TYPE: feature | SCOPE: medium | OWNER: agent — completed log Entry #11
   - Phase 9 — `rustmote-cli::connect` — the payoff command wiring session → viewer.
 
-- [ ] TASK-010 | TYPE: feature | SCOPE: small | OWNER: agent
+- [x] TASK-010 | TYPE: feature | SCOPE: small | OWNER: agent — completed log Entry #12
   - Phase 10 — `rustmote-cli::config` and `rustmote-cli::status`. `config set-mode unsafe --i-understand-this-is-insecure` gate required.
 
 - [ ] TASK-011 | TYPE: feature | SCOPE: medium | OWNER: agent
@@ -85,3 +85,4 @@ Task IDs 001–016 mirror the 16 phases of RUSTMOTE_SPEC §11 "Build order" verb
 - [x] TASK-007 — Phase 7 CLI server subcommands + spec §7.3 smoke tests (log Entry #9, 2026-04-20)
 - [x] TASK-008 — Phase 8 CLI target subcommands + indicatif scan spinner + §3.5 reuse (log Entry #10, 2026-04-20)
 - [x] TASK-009 — Phase 9 CLI connect command wiring session → viewer (log Entry #11, 2026-04-20)
+- [x] TASK-010 — Phase 10 CLI config show/set-mode + status with §6.2 gate (log Entry #12, 2026-04-20)
