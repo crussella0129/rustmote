@@ -24,6 +24,7 @@ mdns-sd = { workspace = true }
 surge-ping = { workspace = true }
 pnet = { workspace = true }
 ipnet = { workspace = true }
+futures = { workspace = true }
 rpassword = { workspace = true }
 reqwest = { workspace = true }
 chrono = { workspace = true }

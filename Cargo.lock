@@ -2459,6 +2459,7 @@ dependencies = [
  "async-trait",
  "chrono",
  "directories",
+ "futures",
  "ipnet",
  "keyring",
  "mdns-sd",

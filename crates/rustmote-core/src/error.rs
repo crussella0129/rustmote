@@ -90,6 +90,9 @@ pub enum RustmoteError {
     #[error("invalid RustDesk target id '{0}'; expected 9 or 10 ASCII digits (spec §3.5)")]
     InvalidTargetId(String),
 
+    #[error("no non-loopback IPv4 interface with a CIDR prefix found for discovery auto-detect")]
+    DiscoveryNoInterface,
+
     #[error("unsafe mode requires explicit acknowledgment flag")]
     UnsafeModeNotAcknowledged,
 
