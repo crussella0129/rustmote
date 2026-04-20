@@ -301,21 +301,15 @@ async fn arp_read() -> Vec<(IpAddr, String)> {
 }
 
 async fn arp_read_from(path: &Path) -> Vec<(IpAddr, String)> {
-    #[cfg(target_os = "linux")]
-    {
-        match tokio::fs::read_to_string(path).await {
-            Ok(body) => parse_proc_net_arp(&body),
-            Err(e) => {
-                tracing::debug!(error = %e, "arp: could not read {}; skipping", path.display());
-                Vec::new()
-            }
+    // `/proc/net/arp` is a Linux-only kernel file. On other platforms
+    // the read fails and we return empty — the pure parser below is
+    // still compiled everywhere so tests that cover it stay portable.
+    match tokio::fs::read_to_string(path).await {
+        Ok(body) => parse_proc_net_arp(&body),
+        Err(e) => {
+            tracing::debug!(error = %e, "arp: could not read {}; skipping", path.display());
+            Vec::new()
         }
-    }
-    #[cfg(not(target_os = "linux"))]
-    {
-        let _ = path;
-        tracing::debug!("arp: non-Linux platform; ARP sweep not implemented in v0.1");
-        Vec::new()
     }
 }
 
