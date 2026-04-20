@@ -1,6 +1,6 @@
 # Tasks — Rustmote
 
-**Last Updated:** 2026-04-20 (Entry #13)
+**Last Updated:** 2026-04-20 (Entry #14)
 
 ## Legend
 
@@ -50,7 +50,7 @@ Task IDs 001–016 mirror the 16 phases of RUSTMOTE_SPEC §11 "Build order" verb
 - [x] TASK-011 | TYPE: feature | SCOPE: medium | OWNER: agent — completed log Entry #13
   - Phase 11 — `rustmote-core::registry_client` (Docker Hub API) + tests. Anonymous v2 registry access, tag listing, manifest digest resolution, TTL-cached responses at `$CACHE/rustmote/docker-hub-cache.toml`. Integration test `registry_client_cache.rs`.
 
-- [ ] TASK-012 | TYPE: feature | SCOPE: large | OWNER: agent
+- [x] TASK-012 | TYPE: feature | SCOPE: large | OWNER: agent — completed log Entry #14
   - Phase 12 — `rustmote-core::relay_lifecycle` (bootstrap, update, rollback) + tests. All commands executed via `russh` channel API with allowlisted args — never shell out, never scp temp scripts. Implement `.rustmote-state.toml` schema (§5.1.1), pre-update snapshots, auto-rollback on health-check failure, 7-day backup GC. Integration tests `relay_lifecycle_mock.rs` and gated `relay_rollback.rs` (`RUSTMOTE_INTEGRATION_DOCKER=1`).
 
 - [ ] TASK-013 | TYPE: feature | SCOPE: medium | OWNER: agent
@@ -87,3 +87,4 @@ Task IDs 001–016 mirror the 16 phases of RUSTMOTE_SPEC §11 "Build order" verb
 - [x] TASK-009 — Phase 9 CLI connect command wiring session → viewer (log Entry #11, 2026-04-20)
 - [x] TASK-010 — Phase 10 CLI config show/set-mode + status with §6.2 gate (log Entry #12, 2026-04-20)
 - [x] TASK-011 — Phase 11 registry_client Docker Hub v2 + TTL cache + hermetic tests (log Entry #13, 2026-04-20)
+- [x] TASK-012 — Phase 12 relay_lifecycle bootstrap/update/rollback + strict-panic MockHost tests (log Entry #14, 2026-04-20)

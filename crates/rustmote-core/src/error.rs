@@ -125,6 +125,35 @@ pub enum RustmoteError {
     #[error("docker compose v1 detected; rustmote requires v2 (the `docker compose` plugin)")]
     DockerComposeV1Detected,
 
+    #[error(
+        "docker engine not installed on the remote; re-run with --install-docker to let \
+         rustmote run the official install script (spec §6.11)"
+    )]
+    DockerEngineNotInstalled,
+
+    #[error(
+        "unsupported relay OS: {0}. Rustmote can bootstrap Debian, Ubuntu, and Arch \
+         automatically; install docker manually and re-run on anything else"
+    )]
+    RelayUnsupportedOs(String),
+
+    #[error(
+        "relay install path {0} exists but is not a rustmote install (no .rustmote-state.toml); \
+         refusing to overwrite (spec §6.12)"
+    )]
+    RelayForeignInstall(PathBuf),
+
+    #[error(
+        "refusing to run relay update in non-interactive mode without --yes (spec §5.1.3 step 4)"
+    )]
+    RelayUpdateNotConfirmed,
+
+    #[error("invalid relay remote path or argument: '{0}'")]
+    InvalidRelayPath(String),
+
+    #[error("invalid docker image reference: '{0}'")]
+    InvalidImageRef(String),
+
     #[error(transparent)]
     Io(#[from] std::io::Error),
 }
