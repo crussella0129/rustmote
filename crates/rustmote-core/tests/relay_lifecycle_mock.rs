@@ -21,8 +21,8 @@ use base64::Engine;
 use chrono::{DateTime, TimeZone, Utc};
 use rustmote_core::registry_client::{RegistryClient, RegistryTransport};
 use rustmote_core::relay_lifecycle::{
-    backup_dir_for, backups_path, compose_path, data_path, env_path, state_path, BootstrapOptions,
-    OsKind, RelayLifecycle, RelayState, UpdateOptions,
+    backup_dir_for, backups_path, compose_path, data_path, env_path, posix_join, state_path,
+    BootstrapOptions, OsKind, RelayLifecycle, RelayState, UpdateOptions,
 };
 use rustmote_core::session::{ExecOutput, RemoteExec};
 use rustmote_core::RustmoteError;
@@ -367,7 +367,10 @@ async fn bootstrap_writes_compose_state_env_and_starts_stack() {
     // id_ed25519.pub appears after `docker compose up` would run in
     // reality; for the mock we seed it as if generation succeeded.
     host.state.lock().unwrap().files.insert(
-        data_path(&PathBuf::from("/opt/rustmote-relay")).join("id_ed25519.pub"),
+        posix_join(
+            &data_path(&PathBuf::from("/opt/rustmote-relay")),
+            "id_ed25519.pub",
+        ),
         b"ssh-ed25519 AAAA... rustmote-relay\n".to_vec(),
     );
 
@@ -795,7 +798,7 @@ fn seed_bootstrapped_host(host: &MockHost, at: DateTime<Utc>, digest: &str) {
     s.files
         .insert(env_path(&install), b"RUSTMOTE_RELAY=1\n".to_vec());
     s.files.insert(
-        data_path(&install).join("id_ed25519.pub"),
+        posix_join(&data_path(&install), "id_ed25519.pub"),
         b"ssh-ed25519 AAAA... rustmote-relay\n".to_vec(),
     );
 }

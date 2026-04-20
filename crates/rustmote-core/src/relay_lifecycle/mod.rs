@@ -459,12 +459,12 @@ impl<'a> RelayLifecycle<'a> {
             self.exec_ok(commands::mkdir_p(&dir)?).await?;
             self.exec_ok(commands::copy_file(
                 &compose_path(&opts.install_path),
-                &dir.join("docker-compose.yml"),
+                &posix_join(&dir, "docker-compose.yml"),
             )?)
             .await?;
             self.exec_ok(commands::copy_file(
                 &state_path(&opts.install_path),
-                &dir.join(".rustmote-state.toml"),
+                &posix_join(&dir, ".rustmote-state.toml"),
             )?)
             .await?;
             // `docker compose config` output captured as a plaintext
@@ -476,7 +476,7 @@ impl<'a> RelayLifecycle<'a> {
                 .await?;
             if cfg.exit_code == 0 {
                 self.exec_ok(commands::write_file(
-                    &dir.join("compose-config.yml"),
+                    &posix_join(&dir, "compose-config.yml"),
                     &cfg.stdout,
                 )?)
                 .await?;
@@ -595,7 +595,7 @@ impl<'a> RelayLifecycle<'a> {
     }
 
     async fn read_public_key(&self, install_path: &Path) -> crate::Result<String> {
-        let p = data_path(install_path).join("id_ed25519.pub");
+        let p = posix_join(&data_path(install_path), "id_ed25519.pub");
         let out = self.read_file(&p).await?;
         Ok(out.stdout_string().trim().to_owned())
     }
@@ -670,12 +670,12 @@ impl<'a> RelayLifecycle<'a> {
 
     async fn rollback(&self, install_path: &Path, backup_dir: &Path) -> crate::Result<()> {
         self.exec_ok(commands::copy_file(
-            &backup_dir.join("docker-compose.yml"),
+            &posix_join(backup_dir, "docker-compose.yml"),
             &compose_path(install_path),
         )?)
         .await?;
         self.exec_ok(commands::copy_file(
-            &backup_dir.join(".rustmote-state.toml"),
+            &posix_join(backup_dir, ".rustmote-state.toml"),
             &state_path(install_path),
         )?)
         .await?;
@@ -736,34 +736,47 @@ impl<'a> RelayLifecycle<'a> {
 // Path helpers
 // -----------------------------------------------------------------------------
 
+/// Join a POSIX path component onto `base` using `/` as the separator.
+///
+/// These paths refer to files on the **remote Linux relay**, so the
+/// separator must always be `/` regardless of the client's OS — on
+/// Windows, `Path::join` would otherwise splice `\` into the result and
+/// the orchestrator would emit commands the relay can't resolve.
+#[must_use]
+pub fn posix_join(base: &Path, component: &str) -> PathBuf {
+    let base_str = base.to_string_lossy();
+    let trimmed = base_str.trim_end_matches('/');
+    PathBuf::from(format!("{trimmed}/{component}"))
+}
+
 /// `<install>/docker-compose.yml`.
 #[must_use]
 pub fn compose_path(install_path: &Path) -> PathBuf {
-    install_path.join("docker-compose.yml")
+    posix_join(install_path, "docker-compose.yml")
 }
 
 /// `<install>/.env`.
 #[must_use]
 pub fn env_path(install_path: &Path) -> PathBuf {
-    install_path.join(".env")
+    posix_join(install_path, ".env")
 }
 
 /// `<install>/.rustmote-state.toml`.
 #[must_use]
 pub fn state_path(install_path: &Path) -> PathBuf {
-    install_path.join(".rustmote-state.toml")
+    posix_join(install_path, ".rustmote-state.toml")
 }
 
 /// `<install>/data`.
 #[must_use]
 pub fn data_path(install_path: &Path) -> PathBuf {
-    install_path.join("data")
+    posix_join(install_path, "data")
 }
 
 /// `<install>/backups`.
 #[must_use]
 pub fn backups_path(install_path: &Path) -> PathBuf {
-    install_path.join("backups")
+    posix_join(install_path, "backups")
 }
 
 /// `<install>/backups/pre-update-<iso-suffix>`.
@@ -772,7 +785,7 @@ pub fn backup_dir_for(install_path: &Path, at: DateTime<Utc>) -> PathBuf {
     // Replace `:` with `-` so the path is safe everywhere (Windows file
     // systems reject `:`, and it's easier to eyeball in an ls listing).
     let suffix = at.format("%Y-%m-%dT%H-%M-%SZ").to_string();
-    backups_path(install_path).join(format!("pre-update-{suffix}"))
+    posix_join(&backups_path(install_path), &format!("pre-update-{suffix}"))
 }
 
 // -----------------------------------------------------------------------------
