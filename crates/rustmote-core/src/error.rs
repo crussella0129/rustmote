@@ -87,6 +87,9 @@ pub enum RustmoteError {
     #[error("viewer binary not found; install RustDesk or set viewer_path")]
     ViewerNotFound,
 
+    #[error("invalid RustDesk target id '{0}'; expected 9 or 10 ASCII digits (spec §3.5)")]
+    InvalidTargetId(String),
+
     #[error("unsafe mode requires explicit acknowledgment flag")]
     UnsafeModeNotAcknowledged,
 
