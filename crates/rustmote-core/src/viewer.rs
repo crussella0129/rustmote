@@ -37,7 +37,6 @@
 //! The supported RustDesk version range is documented in `README.md`
 //! per spec §3.5.
 
-use std::ffi::OsString;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command};
 
@@ -239,7 +238,7 @@ fn default_candidates() -> Vec<PathBuf> {
 /// `PATH` entry where `{entry}/{name}` exists as a regular file.
 #[cfg(target_os = "linux")]
 fn which_on_path(name: &str) -> Option<PathBuf> {
-    let path_var: OsString = std::env::var_os("PATH")?;
+    let path_var = std::env::var_os("PATH")?;
     for entry in std::env::split_paths(&path_var) {
         let candidate = entry.join(name);
         if candidate.is_file() {
