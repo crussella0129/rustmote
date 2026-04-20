@@ -32,3 +32,4 @@ chrono = { workspace = true }
 [dev-dependencies]
 tokio = { workspace = true, features = ["macros", "rt-multi-thread", "test-util"] }
 async-trait = { workspace = true }
+tempfile = { workspace = true }
