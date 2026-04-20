@@ -351,16 +351,14 @@ fn looks_like_mac(s: &str) -> bool {
 // -----------------------------------------------------------------------------
 
 fn auto_detect_cidr() -> crate::Result<Ipv4Net> {
-    for iface in pnet::datalink::interfaces() {
-        if !iface.is_up() || iface.is_loopback() {
+    let ifaces = if_addrs::get_if_addrs().map_err(|_| RustmoteError::DiscoveryNoInterface)?;
+    for iface in ifaces {
+        if iface.is_loopback() {
             continue;
         }
-        for ipnet in &iface.ips {
-            if let pnet::ipnetwork::IpNetwork::V4(v4) = ipnet {
-                // IpNetwork uses prefix length already in range [0, 32].
-                if let Ok(net) = Ipv4Net::new(v4.ip(), v4.prefix()) {
-                    return Ok(net.trunc());
-                }
+        if let if_addrs::IfAddr::V4(v4) = iface.addr {
+            if let Ok(net) = Ipv4Net::new(v4.ip, v4.prefixlen) {
+                return Ok(net.trunc());
             }
         }
     }

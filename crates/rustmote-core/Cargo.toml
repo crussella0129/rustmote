@@ -22,7 +22,7 @@ keyring = { workspace = true }
 directories = { workspace = true }
 mdns-sd = { workspace = true }
 surge-ping = { workspace = true }
-pnet = { workspace = true }
+if-addrs = { workspace = true }
 ipnet = { workspace = true }
 futures = { workspace = true }
 rpassword = { workspace = true }
