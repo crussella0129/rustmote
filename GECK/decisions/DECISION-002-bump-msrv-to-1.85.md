@@ -18,6 +18,7 @@ Raise `workspace.package.rust-version` from `1.75` to `1.85`, update the CI matr
 
 **Consequences:**
 - `Cargo.toml` workspace `rust-version = "1.85"`, `ci.yml` MSRV job runs `1.85`, `RUSTMOTE_SPEC.md` §2 (code block at line 87) and §7.4 (CI matrix line) updated in lockstep.
+- Workspace `resolver = "3"` (stabilized in Cargo 1.84) is required alongside the bump — without it the resolver ignores transitive `rust-version` fields and promotes deps whose own MSRV exceeds ours (observed on first push: `home@0.5.12` requires 1.88, `icu_*@2.2.0` requires 1.86). Resolver v3 downgrades those to the newest 1.85-compatible version automatically, making the MSRV job stable without per-crate pins in `Cargo.lock`.
 - v0.1.0 ships with MSRV 1.85 in `CHANGELOG.md` and README.
 - Future MSRV bumps get their own DECISION-NNN rather than being handled inline.
 - No source code changes are required — we were never using features post-1.75 gated on the MSRV; the bump is purely an ecosystem-compatibility move.
