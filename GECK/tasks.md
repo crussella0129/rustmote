@@ -1,6 +1,6 @@
 # Tasks — Rustmote
 
-**Last Updated:** 2026-04-20 (Entry #8)
+**Last Updated:** 2026-04-20 (Entry #9)
 
 ## Legend
 
@@ -35,7 +35,7 @@ Task IDs 001–016 mirror the 16 phases of RUSTMOTE_SPEC §11 "Build order" verb
 - [x] TASK-006 | TYPE: feature | SCOPE: medium | OWNER: agent — completed log Entry #8
   - Phase 6 — `rustmote-core::discovery` + tests. Concurrent mDNS + ICMP ping sweep + ARP read (§3.6) via `tokio::join!`; must complete a /24 in <10s. Integration test `discovery_localhost.rs`.
 
-- [ ] TASK-007 | TYPE: feature | SCOPE: medium | OWNER: agent
+- [x] TASK-007 | TYPE: feature | SCOPE: medium | OWNER: agent — completed log Entry #9
   - Phase 7 — `rustmote-cli::server` subcommands (`add`/`list`/`remove`/`show`). Clap derive API, `comfy-table` output, `--json` flag per §4.2, `dialoguer` prompts only when flag missing AND stdin is a TTY.
 
 - [ ] TASK-008 | TYPE: feature | SCOPE: medium | OWNER: agent
@@ -82,3 +82,4 @@ Task IDs 001–016 mirror the 16 phases of RUSTMOTE_SPEC §11 "Build order" verb
 - [x] TASK-004 — Phase 4 SSH session + host-key TOFU + mock transport trait (log Entry #6, 2026-04-19)
 - [x] TASK-005 — Phase 5 viewer detection + TargetId validation + Command builder (log Entry #7, 2026-04-19)
 - [x] TASK-006 — Phase 6 concurrent LAN discovery (mDNS + ICMP + ARP) (log Entry #8, 2026-04-20)
+- [x] TASK-007 — Phase 7 CLI server subcommands + spec §7.3 smoke tests (log Entry #9, 2026-04-20)

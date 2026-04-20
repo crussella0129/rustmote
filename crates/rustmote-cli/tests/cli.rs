@@ -1,0 +1,148 @@
+//! CLI smoke tests per spec §7.3.
+//!
+//! Each test invokes the built `rustmote` binary through `assert_cmd`,
+//! isolating config state via the `RUSTMOTE_CONFIG_DIR` env override so
+//! tests never touch the developer's real config directory.
+
+use std::path::PathBuf;
+
+use assert_cmd::Command;
+use predicates::prelude::*;
+
+/// Produce a unique scratch config directory for each test invocation.
+fn scratch_config_dir(tag: &str) -> PathBuf {
+    let mut p = std::env::temp_dir();
+    p.push(format!(
+        "rustmote-cli-test-{}-{}-{}",
+        tag,
+        std::process::id(),
+        chrono::Utc::now().timestamp_nanos_opt().unwrap_or_default(),
+    ));
+    p
+}
+
+#[test]
+fn help_exits_zero_and_mentions_every_subcommand_group() {
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .arg("--help")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("server"))
+        .stdout(predicate::str::contains("target"))
+        .stdout(predicate::str::contains("connect"))
+        .stdout(predicate::str::contains("status"))
+        .stdout(predicate::str::contains("relay"))
+        .stdout(predicate::str::contains("config"));
+}
+
+#[test]
+fn server_list_on_empty_config_exits_zero() {
+    let dir = scratch_config_dir("server-list-empty");
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["server", "list"])
+        .assert()
+        .success();
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn config_path_prints_path_under_config_dir() {
+    let dir = scratch_config_dir("config-path");
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["config", "path"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(dir.to_string_lossy().as_ref()))
+        .stdout(predicate::str::contains("config.toml"));
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+// Spec §7.3 also requires:
+//   rustmote relay check-updates nonexistent-server → UnknownServer, non-zero
+// That handler lands in Phase 13 (TASK-013). The test is added there so
+// it meaningfully exercises the registry-lookup failure path rather than
+// a placeholder bail.
+
+#[test]
+fn server_add_list_show_roundtrip() {
+    let dir = scratch_config_dir("server-roundtrip");
+    let bin = || Command::cargo_bin("rustmote").unwrap();
+
+    bin()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args([
+            "server",
+            "add",
+            "zima-brain",
+            "--host",
+            "10.0.0.1",
+            "--user",
+            "charles",
+        ])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("zima-brain"));
+
+    bin()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["server", "list"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("zima-brain"))
+        .stdout(predicate::str::contains("10.0.0.1"));
+
+    bin()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["server", "show", "zima-brain", "--json"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("\"name\": \"zima-brain\""))
+        .stdout(predicate::str::contains("\"ssh_user\": \"charles\""));
+
+    bin()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["server", "remove", "zima-brain"])
+        .assert()
+        .success();
+
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn server_add_rejects_invalid_name_per_spec_6_4() {
+    let dir = scratch_config_dir("server-bad-name");
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args([
+            "server",
+            "add",
+            "bad name with space",
+            "--host",
+            "10.0.0.1",
+            "--user",
+            "u",
+        ])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("invalid server name"));
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn server_add_without_user_on_non_tty_fails_with_clear_message() {
+    let dir = scratch_config_dir("server-no-user-no-tty");
+    Command::cargo_bin("rustmote")
+        .unwrap()
+        .env("RUSTMOTE_CONFIG_DIR", &dir)
+        .args(["server", "add", "zima-brain", "--host", "10.0.0.1"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("--user"));
+    std::fs::remove_dir_all(&dir).ok();
+}

@@ -93,12 +93,24 @@ impl GeneralConfig {
     }
 }
 
+/// Environment variable that overrides the OS-appropriate config directory.
+/// Used by integration tests and packaging scenarios where the default
+/// [`ProjectDirs`] location is inappropriate. Not documented as a user-facing
+/// feature — callers still expect the OS-appropriate default.
+pub const CONFIG_DIR_ENV: &str = "RUSTMOTE_CONFIG_DIR";
+
 /// Returns the rustmote config directory (creating it is the caller's job).
+///
+/// Honours `RUSTMOTE_CONFIG_DIR` when set, else falls back to the
+/// OS-appropriate [`ProjectDirs`] location.
 ///
 /// # Errors
 /// Returns [`RustmoteError::NoConfigDir`] on exotic platforms where
 /// [`ProjectDirs`] cannot locate a user config base directory.
 pub fn config_dir() -> crate::Result<PathBuf> {
+    if let Some(overridden) = std::env::var_os(CONFIG_DIR_ENV) {
+        return Ok(PathBuf::from(overridden));
+    }
     ProjectDirs::from("", "", "rustmote")
         .map(|p| p.config_dir().to_path_buf())
         .ok_or(RustmoteError::NoConfigDir)

@@ -23,6 +23,18 @@ pub enum ConfigCmd {
     Path,
 }
 
-pub async fn run(_cmd: ConfigCmd) -> Result<()> {
-    bail!("`rustmote config` subcommands land in Phase 10 (TASK-010).");
+pub async fn run(cmd: ConfigCmd) -> Result<()> {
+    // `Path` is a trivial read of the resolved config directory — landed
+    // early so the spec §7.3 CLI smoke test for `rustmote config path` can
+    // pass. `Show` and `SetMode` land in Phase 10 (TASK-010).
+    match cmd {
+        ConfigCmd::Path => {
+            let p = rustmote_core::config::config_path()?;
+            println!("{}", p.display());
+            Ok(())
+        }
+        ConfigCmd::Show { .. } | ConfigCmd::SetMode { .. } => {
+            bail!("`rustmote config show` / `set-mode` land in Phase 10 (TASK-010).")
+        }
+    }
 }

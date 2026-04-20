@@ -59,6 +59,28 @@ impl RemoteServer {
     /// Default RustDesk `hbbs` port when none is specified.
     pub const DEFAULT_RELAY_PORT: u16 = 21116;
 
+    /// Validate a server name against spec §6.4: 1-64 characters, each matching
+    /// `[a-zA-Z0-9_-]`. This is the allowlist enforced at every registry
+    /// insertion — names pass untrusted through the CLI into config storage,
+    /// so validation is required before any `RemoteServer` is constructed from
+    /// user input.
+    ///
+    /// # Errors
+    /// Returns [`RustmoteError::InvalidServerName`] when the name is empty,
+    /// longer than 64 chars, or contains any character outside the allowlist.
+    pub fn validate_name(name: &str) -> crate::Result<()> {
+        let len = name.len();
+        if (1..=64).contains(&len)
+            && name
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || b == b'_' || b == b'-')
+        {
+            Ok(())
+        } else {
+            Err(RustmoteError::InvalidServerName(name.to_owned()))
+        }
+    }
+
     /// Build a `RemoteServer` from the minimum set of fields, filling
     /// `created_at` with the current UTC time and `relay_key` / `last_used`
     /// with `None`.
@@ -260,6 +282,35 @@ mod tests {
         let s = cfg.get_server("zima-brain").unwrap();
         assert_eq!(s.relay_key.as_deref(), Some("AAAA..."));
         assert!(s.last_used.is_some());
+    }
+
+    #[test]
+    fn validate_name_accepts_allowlist() {
+        for ok in ["a", "zima-brain", "a_b_C-1", &"x".repeat(64)] {
+            assert!(
+                RemoteServer::validate_name(ok).is_ok(),
+                "should accept {ok}"
+            );
+        }
+    }
+
+    #[test]
+    fn validate_name_rejects_bad_input() {
+        for bad in [
+            "",
+            &"x".repeat(65),
+            "has space",
+            "semi;colon",
+            "dot.name",
+            "slash/name",
+            "emoji🦀",
+            "tab\tname",
+        ] {
+            assert!(
+                RemoteServer::validate_name(bad).is_err(),
+                "should reject {bad:?}"
+            );
+        }
     }
 
     #[test]
